@@ -5,6 +5,7 @@
 using namespace std;
 
 struct Node {
+	int id;
 	int key;
 	Node *pi;
 };
@@ -14,12 +15,6 @@ Node Q[100];
 
 int parent(int i) {
 	return i/2;
-}
-
-void Insert(Node in) {
-	size++;
-	Q[size-1].key = INT_MAX;
-	DecreaseKey(in, size-1);
 }
 
 void DecreaseKey(Node n, int size) {
@@ -36,12 +31,10 @@ void DecreaseKey(Node n, int size) {
 	}
 }
 
-Node ExtractMin() {
-	Node min = Q[0];
-	Q[0] = Q[size-1];
-	size--;
-	minHeapify(0);
-	return min;
+void Insert(Node in) {
+	size++;
+	Q[size-1].key = INT_MAX;
+	DecreaseKey(in, size-1);
 }
 
 void minHeapify(int input) {
@@ -65,7 +58,13 @@ void minHeapify(int input) {
 	}
 }
 
-
+Node ExtractMin() {
+	Node min = Q[0];
+	Q[0] = Q[size-1];
+	size--;
+	minHeapify(0);
+	return min;
+}
 
 int main() {
 	int vertices;
@@ -74,11 +73,12 @@ int main() {
 	Node input;
 	Node current;
 	input.key = INT_MAX;
-	input.parent = NULL;
+	input.pi = NULL;
 	cin >> vertices;
 	int graph[vertices][vertices];
 	for (int i = 0; i < vertices; i++) {
 		graph[i][i] = 0;
+		Q[i].id = i;
 		Q[i].key = MAX_INT;
 		Q[i].pi = NULL;
 	}
@@ -93,9 +93,9 @@ int main() {
 	while (size > 0) {
 		current = ExtractMin();
 		for (int k = 0; k < size; k++) {
-			if (graph[current][k] != 0 && graph[current][k] < Q[k].key) {
+			if (graph[current.id][k] != 0 && graph[current.id][k] < Q[k].key) {
 				Q[k].pi = current;
-				Q[k].key = graphs[current][k];
+				Q[k].key = graph[current][k];
 			}
 		}
 	}
